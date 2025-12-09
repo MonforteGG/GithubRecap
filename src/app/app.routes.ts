@@ -1,0 +1,9 @@
+import { Routes } from '@angular/router';
+import { HomeComponent } from './components/home/home.component';
+import { RecapComponent } from './components/recap/recap.component';
+
+export const routes: Routes = [
+    { path: '', component: HomeComponent },
+    { path: 'recap/:username', component: RecapComponent },
+    { path: '**', redirectTo: '' }
+];

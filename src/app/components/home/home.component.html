@@ -1,0 +1,46 @@
+<div
+  class="min-h-screen bg-black text-white flex flex-col items-center justify-center p-4 relative overflow-hidden font-sans">
+  <!-- Dynamic Background / Glass Elements -->
+  <div
+    class="absolute top-[10%] left-[20%] w-[500px] h-[500px] bg-purple-600 rounded-full mix-blend-screen filter blur-[128px] opacity-30 animate-pulse">
+  </div>
+  <div
+    class="absolute bottom-[10%] right-[20%] w-[500px] h-[500px] bg-blue-600 rounded-full mix-blend-screen filter blur-[128px] opacity-30 animate-pulse"
+    style="animation-delay: 2s;"></div>
+
+  <div
+    class="glass-card p-12 w-full max-w-lg mx-auto text-center transform transition-all duration-500 hover:scale-[1.01]">
+    <h1
+      class="text-6xl font-black mb-6 bg-clip-text text-transparent bg-gradient-to-tr from-white via-blue-200 to-blue-400 tracking-tight leading-loose drop-shadow-sm">
+      GitHub Recap
+      <span class="block text-2xl font-medium text-white/60 mt-2 tracking-wide font-mono">2025</span>
+    </h1>
+
+    <p class="text-lg text-blue-100/80 mb-10 font-light leading-relaxed">
+      Connect your account to unlock your personalized year in code. <br />
+      <span class="text-sm text-white/40 block mt-2">(Includes private contributions & higher limits)</span>
+    </p>
+
+    <!-- Login Button -->
+    <button (click)="login()" [disabled]="isLoading"
+      class="group relative w-full overflow-hidden rounded-2xl bg-white/10 p-[1px] transition-all duration-300 hover:bg-white/20 focus:outline-none focus:ring-4 focus:ring-blue-500/30">
+      <div
+        class="relative flex items-center justify-center gap-3 rounded-2xl bg-black/40 backdrop-blur-xl px-4 py-4 transition-all duration-300 group-hover:bg-black/30">
+        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/github/github-original.svg"
+          class="w-6 h-6 invert opacity-90" alt="GitHub Logo">
+        <span class="text-lg font-medium text-white tracking-wide">
+          {{ isLoading ? 'Connecting...' : 'Sign in with GitHub' }}
+        </span>
+        <span *ngIf="!isLoading"
+          class="absolute right-6 opacity-0 transform translate-x-2 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0">
+          →
+        </span>
+      </div>
+    </button>
+
+    <p *ngIf="error"
+      class="mt-4 text-red-400 text-sm bg-red-500/10 py-2 px-4 rounded-lg border border-red-500/20 animate-pulse">
+      {{ error }}
+    </p>
+  </div>
+</div>

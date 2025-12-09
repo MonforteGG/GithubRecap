@@ -1,0 +1,377 @@
+<div
+    class="min-h-screen bg-black text-white flex flex-col items-center justify-center p-4 relative overflow-hidden font-sans selection:bg-purple-500/50">
+    <!-- Dynamic Background - More vibrant -->
+    <div
+        class="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-purple-600/30 rounded-full mix-blend-screen filter blur-[100px] opacity-60 animate-pulse">
+    </div>
+    <div class="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-blue-600/30 rounded-full mix-blend-screen filter blur-[100px] opacity-60 animate-pulse"
+        style="animation-delay: 2s;"></div>
+    <div class="absolute top-[40%] left-[40%] w-[400px] h-[400px] bg-pink-600/20 rounded-full mix-blend-screen filter blur-[80px] opacity-40 animate-pulse"
+        style="animation-delay: 4s;"></div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="z-20 flex flex-col items-center animate-pulse">
+        <div
+            class="w-16 h-16 border-4 border-t-blue-500 border-r-purple-500 border-b-pink-500 border-l-transparent rounded-full animate-spin mb-6">
+        </div>
+        <p
+            class="text-xl font-light tracking-[0.3em] text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
+            GENERATING RECAP</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error"
+        class="z-20 text-center max-w-md p-8 backdrop-blur-xl bg-white/5 rounded-3xl border border-red-500/30 shadow-2xl">
+        <div class="text-red-400 text-6xl mb-4 font-bold">!</div>
+        <p class="text-gray-200 text-lg mb-6">{{ error }}</p>
+        <button (click)="restart()"
+            class="bg-white text-black font-bold py-3 px-8 rounded-full hover:bg-gray-200 transition-transform active:scale-95">Try
+            Again</button>
+    </div>
+
+    <!-- Main Card Container -->
+    <div *ngIf="recapData && !loading" class="z-20 flex flex-col items-center gap-8 perspective-1000">
+
+        <!-- The Card (Target for Download) -->
+        <div id="recap-card" class="relative group cursor-default">
+            <!-- Glow Effect Behind -->
+            <div
+                class="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-[2.5rem] blur opacity-40 group-hover:opacity-75 transition duration-500">
+            </div>
+
+            <!-- Card Content -->
+            <div
+                class="card-container relative w-[360px] h-[640px] md:w-[450px] md:h-[680px] bg-black/80 backdrop-blur-3xl rounded-[2.5rem] border border-white/10 p-8 flex flex-col shadow-2xl overflow-hidden">
+
+                <!-- Shine Layer -->
+                <div class="shine-layer"></div>
+
+                <!-- Header -->
+                <div class="flex justify-between items-center mb-6">
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500/80"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
+                    </div>
+                    <div class="text-xs font-mono text-gray-500 tracking-widest">GITHUB RECAP 2025</div>
+                </div>
+
+                <!-- Slide 0: Identity -->
+                <div *ngIf="currentSlide === 0" class="flex-1 flex flex-col items-center animate-slide-in">
+                    <div class="relative w-32 h-32 mb-6 mt-4">
+                        <div
+                            class="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full blur-lg opacity-70">
+                        </div>
+                        <img [src]="recapData.user.avatar_url"
+                            class="relative w-full h-full rounded-full border-2 border-white/20 object-cover shadow-xl">
+                    </div>
+
+                    <h2
+                        class="text-3xl font-bold text-center mb-1 bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-400 tracking-tight">
+                        {{ recapData.user.name }}</h2>
+                    <p class="text-blue-400 font-mono mb-4 opacity-80 text-sm">&#64;{{ recapData.user.login }}</p>
+
+                    <div class="w-full text-center mb-8 space-y-2">
+                        <p *ngIf="recapData.user.bio" class="text-gray-300 italic text-sm px-4">"{{ recapData.user.bio
+                            }}"</p>
+
+                        <div class="flex flex-col gap-1 items-center text-xs text-gray-500 mt-2">
+                            <span *ngIf="recapData.user.location" class="flex items-center gap-1">
+                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                {{ recapData.user.location }}
+                            </span>
+                            <span *ngIf="recapData.user.blog" class="flex items-center gap-1 text-blue-400">
+                                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
+                                </svg>
+                                {{ recapData.user.blog }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4 w-full mt-auto mb-8">
+                        <div
+                            class="bg-gradient-to-br from-yellow-500/10 to-transparent rounded-2xl p-4 text-center border border-yellow-500/20">
+                            <div class="text-2xl font-black text-yellow-400 mb-1">{{ recapData.totalStars2025 }}</div>
+                            <div class="text-[10px] uppercase tracking-widest text-yellow-500/60 font-bold">2025 Stars
+                            </div>
+                        </div>
+                        <div
+                            class="bg-gradient-to-br from-purple-500/10 to-transparent rounded-2xl p-4 text-center border border-purple-500/20">
+                            <div class="text-2xl font-black text-purple-400 mb-1">{{ recapData.user.followers }}</div>
+                            <div class="text-[10px] uppercase tracking-widest text-purple-500/60 font-bold">Followers
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 1: Impact 2025 (Monthly Graph) -->
+                <div *ngIf="currentSlide === 1" class="flex-1 flex flex-col justify-center animate-slide-in">
+                    <h3
+                        class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-green-400 to-emerald-400 mb-4 uppercase tracking-widest">
+                        2025 Activity</h3>
+
+                    <!-- Image Graph (Monthly) -->
+                    <div class="w-full mb-8">
+                        <div
+                            class="h-40 bg-white/5 rounded-t-xl border-x border-t border-white/10 p-4 flex items-end justify-between relative overflow-hidden gap-2">
+                            <div *ngIf="recapData.stats2025.weeklyActivity" class="contents">
+                                <!-- We render 12 bars for months -->
+                                <div *ngFor="let monthCount of recapData.stats2025.weeklyActivity; let i = index"
+                                    class="flex-1 bg-green-500/50 hover:bg-green-400 transition-all relative group/bar rounded-t-sm"
+                                    [style.height.%]="(monthCount / (getMaxActivity() || 1)) * 90 + 5">
+                                    <!-- Tooltip -->
+                                    <div
+                                        class="absolute -top-8 left-1/2 -translate-x-1/2 bg-black/80 text-white text-xs px-2 py-1 rounded opacity-0 group-hover/bar:opacity-100 whitespace-nowrap z-10 pointer-events-none border border-white/10">
+                                        {{ getMonthName(i) }}: {{ monthCount }} commits
+                                    </div>
+                                </div>
+                            </div>
+                            <p *ngIf="!recapData.stats2025.weeklyActivity"
+                                class="text-gray-500 text-sm w-full text-center self-center">No activity data.</p>
+                        </div>
+                        <!-- Month Labels -->
+                        <div
+                            class="flex justify-between px-2 py-2 bg-white/5 rounded-b-xl border-x border-b border-white/10">
+                            <span *ngFor="let m of [1,2,3,4,5,6,7,8,9,10,11,12]"
+                                class="text-[10px] text-gray-500 font-mono w-full text-center">
+                                {{ m }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div
+                            class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border-l-4 border-green-500">
+                            <div>
+                                <div class="text-4xl font-black text-white">{{
+                                    recapData.stats2025.totalCommits }}</div>
+                                <div class="text-xs text-gray-400 uppercase tracking-wider">Total Commits</div>
+                            </div>
+                            <svg class="w-10 h-10 text-green-500/50" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                            </svg>
+                        </div>
+
+                        <div
+                            class="flex items-center justify-between p-4 bg-white/5 rounded-2xl border-l-4 border-purple-500">
+                            <div>
+                                <div class="text-4xl font-black text-white">{{ recapData.stats2025.prCount
+                                    }}</div>
+                                <div class="text-xs text-gray-400 uppercase tracking-wider">Pull Requests
+                                </div>
+                            </div>
+                            <svg class="w-10 h-10 text-purple-500/50" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 2: Evolution (Commits + PRs) -->
+                <div *ngIf="currentSlide === 2" class="flex-1 flex flex-col justify-center animate-slide-in">
+                    <h3
+                        class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-blue-400 to-indigo-400 mb-6 uppercase tracking-widest">
+                        Evolution 🚀</h3>
+
+                    <!-- Commits Comparison -->
+                    <div class="mb-8">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-400 font-mono text-sm">COMMITS VS 2024</span>
+                            <span class="text-green-400 font-bold"
+                                *ngIf="recapData.stats2025.totalCommits > recapData.stats2024.totalCommits">
+                                📈 +{{ (((recapData.stats2025.totalCommits - recapData.stats2024.totalCommits) /
+                                (recapData.stats2024.totalCommits || 1)) * 100) | number:'1.0-0' }}%
+                            </span>
+                        </div>
+                        <div class="flex items-end h-24 gap-4">
+                            <!-- 2024 -->
+                            <div class="flex-1 flex flex-col items-center justify-end h-full">
+                                <span class="text-xs text-gray-500 mb-1">{{ recapData.stats2024.totalCommits }}</span>
+                                <div class="w-full bg-gray-700/50 rounded-t-lg"
+                                    [style.height.%]="(recapData.stats2024.totalCommits / ((recapData.stats2025.totalCommits > recapData.stats2024.totalCommits ? recapData.stats2025.totalCommits : recapData.stats2024.totalCommits) || 1)) * 100">
+                                </div>
+                                <span class="text-[10px] text-gray-500 mt-1">2024</span>
+                            </div>
+                            <!-- 2025 -->
+                            <div class="flex-1 flex flex-col items-center justify-end h-full">
+                                <span class="text-xs text-white font-bold mb-1">{{ recapData.stats2025.totalCommits
+                                    }}</span>
+                                <div class="w-full bg-blue-500 rounded-t-lg relative overflow-hidden"
+                                    [style.height.%]="(recapData.stats2025.totalCommits / ((recapData.stats2025.totalCommits > recapData.stats2024.totalCommits ? recapData.stats2025.totalCommits : recapData.stats2024.totalCommits) || 1)) * 100">
+                                    <div class="absolute inset-0 bg-white/20 animate-pulse"></div>
+                                </div>
+                                <span class="text-[10px] text-blue-400 mt-1 font-bold">2025</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- PR Comparison -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-gray-400 font-mono text-sm">PRS VS 2024</span>
+                            <span class="text-purple-400 font-bold"
+                                *ngIf="recapData.stats2025.prCount > recapData.stats2024.prCount">
+                                🔥 +{{ (((recapData.stats2025.prCount - recapData.stats2024.prCount) /
+                                (recapData.stats2024.prCount || 1)) * 100) | number:'1.0-0' }}%
+                            </span>
+                        </div>
+                        <div class="flex items-end h-24 gap-4">
+                            <!-- 2024 -->
+                            <div class="flex-1 flex flex-col items-center justify-end h-full">
+                                <span class="text-xs text-gray-500 mb-1">{{ recapData.stats2024.prCount }}</span>
+                                <div class="w-full bg-gray-700/50 rounded-t-lg"
+                                    [style.height.%]="(recapData.stats2024.prCount / ((recapData.stats2025.prCount > recapData.stats2024.prCount ? recapData.stats2025.prCount : recapData.stats2024.prCount) || 1)) * 100">
+                                </div>
+                                <span class="text-[10px] text-gray-500 mt-1">2024</span>
+                            </div>
+                            <!-- 2025 -->
+                            <div class="flex-1 flex flex-col items-center justify-end h-full">
+                                <span class="text-xs text-white font-bold mb-1">{{ recapData.stats2025.prCount
+                                    }}</span>
+                                <div class="w-full bg-purple-500 rounded-t-lg relative overflow-hidden"
+                                    [style.height.%]="(recapData.stats2025.prCount / ((recapData.stats2025.prCount > recapData.stats2024.prCount ? recapData.stats2025.prCount : recapData.stats2024.prCount) || 1)) * 100">
+                                </div>
+                                <span class="text-[10px] text-purple-400 mt-1 font-bold">2025</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 3: Tech Stack (Top 3, Vertical List) -->
+                <div *ngIf="currentSlide === 3" class="flex-1 flex flex-col justify-center animate-slide-in">
+                    <h3
+                        class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-yellow-400 to-orange-400 mb-8 uppercase tracking-widest leading-relaxed text-center">
+                        Top Weapons 🛠️</h3>
+
+                    <!-- Top 3 List -->
+                    <div class="flex flex-col gap-4 w-full">
+                        <div *ngFor="let lang of recapData.topLanguages; let i = index"
+                            class="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-white/5 relative overflow-hidden group">
+
+                            <!-- Gold/Silver/Bronze effects -->
+                            <div *ngIf="i===0" class="absolute inset-0 bg-yellow-500/10"></div>
+                            <div *ngIf="i===1" class="absolute inset-0 bg-gray-300/5"></div>
+                            <div *ngIf="i===2" class="absolute inset-0 bg-orange-700/5"></div>
+
+                            <div class="text-2xl font-black w-8 text-center"
+                                [ngClass]="{'text-yellow-500': i===0, 'text-gray-300': i===1, 'text-orange-600': i===2}">
+                                #{{ i + 1 }}
+                            </div>
+
+                            <img [src]="lang.icon" class="w-12 h-12 drop-shadow-md">
+
+                            <div class="flex-1">
+                                <div class="text-xl font-bold text-white">{{ lang.language }}</div>
+                                <div class="text-xs text-gray-400 uppercase tracking-widest">
+                                    {{ lang.count }} commits
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Slide 4: Key Projects (Sort by Commits) -->
+                <div *ngIf="currentSlide === 4" class="flex-1 flex flex-col justify-center animate-slide-in">
+                    <h3
+                        class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-br from-indigo-400 to-purple-400 mb-6 uppercase tracking-widest">
+                        Key Projects</h3>
+
+                    <div class="space-y-4">
+                        <a *ngFor="let repo of recapData.topProjects" [href]="repo.html_url" target="_blank"
+                            class="block bg-white/5 hover:bg-white/10 p-4 rounded-2xl border border-white/5 transition-all focus:scale-[1.02] active:scale-95 group relative overflow-hidden">
+                            <!-- Background Icon Faded -->
+                            <div class="absolute right-[-10px] bottom-[-10px] opacity-5 pointer-events-none">
+                                <img *ngIf="repo.language" [src]="getIcon(repo.language)" class="w-24 h-24 rotate-12">
+                            </div>
+
+                            <div class="flex justify-between items-start mb-2 relative z-10">
+                                <h4 class="font-bold text-lg text-white group-hover:text-indigo-300 truncate w-2/3">
+                                    {{ repo.name }}</h4>
+                                <div class="flex flex-col items-end">
+                                    <span class="text-white font-bold text-sm">{{ repo.commitCount }} commits</span>
+                                    <span class="text-yellow-500 text-[10px] font-bold">★ {{ repo.stargazers_count
+                                        }}</span>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-400 line-clamp-2 h-8 relative z-10">{{
+                                repo.description || 'No description provided.' }}</p>
+                            <div class="mt-3 flex items-center gap-2 relative z-10">
+                                <!-- Tech Icon -->
+                                <img *ngIf="repo.language" [src]="getIcon(repo.language)" class="w-5 h-5"
+                                    [title]="repo.language">
+                                <span class="text-[10px] text-gray-500 uppercase tracking-wider font-bold">{{
+                                    repo.language }}</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Bottom Branding -->
+                <div class="mt-auto flex justify-center pt-8 opacity-40">
+                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                        <path
+                            d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                    </svg>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="flex flex-col items-center gap-6 w-full max-w-[450px]">
+
+            <!-- Navigation Buttons -->
+            <div class="flex items-center justify-between w-full px-8">
+                <button (click)="prevSlide()" [disabled]="currentSlide === 0"
+                    class="p-3 rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                    </svg>
+                </button>
+
+                <div class="flex gap-2">
+                    <div *ngFor="let i of [0,1,2,3,4]" class="h-1.5 rounded-full transition-all duration-300 bg-white"
+                        [ngClass]="{'w-8 opacity-100': i === currentSlide, 'w-2 opacity-30': i !== currentSlide}">
+                    </div>
+                </div>
+
+                <button (click)="nextSlide()" [disabled]="currentSlide === totalSlides - 1"
+                    class="p-3 rounded-full bg-white/10 hover:bg-white/20 disabled:opacity-30 disabled:cursor-not-allowed transition-all text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                        stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Download Button -->
+            <button (click)="downloadCard()" [disabled]="isDownloading"
+                class="w-full py-4 bg-white text-black font-bold rounded-2xl shadow-lg hover:shadow-cyan-500/50 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2">
+                <svg *ngIf="!isDownloading" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M12 12.75l-3-3m0 0l3 3m-3-3l3-3M3 16.5V12" />
+                </svg>
+                <span *ngIf="!isDownloading">Share This Card</span>
+                <span *ngIf="isDownloading" class="animate-pulse">Capturing...</span>
+            </button>
+
+            <button (click)="restart()" class="text-sm text-gray-500 hover:text-white transition-colors">Create
+                Another</button>
+        </div>
+
+    </div>
+
+</div>
